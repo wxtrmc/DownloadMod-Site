@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+  :root {
+    --bg: #17181b;
+    --panel: #1f2024;
+    --panel2: #26272c;
+    --line: #2f3036;
+    --text: #e6e6e9;
+    --muted: #8e9099;
+    --accent: #7b5def;
+    --accent-hover: #6a4de0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Tahoma, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+    header {
+    position: relative;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 58px;
+  }
+  .nav img { width: 34px; height: 34px; }
+  .nav span { font-weight: bold; font-size: 17px; }
+
+  .links {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-left: 16px;
+  }
+  .links a {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 11px;
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+  }
+  .links a:hover { border-color: var(--accent); }
+  .links svg { width: 18px; height: 18px; fill: currentColor; }
+  @media (max-width: 640px) {
+    .links a span { display: none; }
+    .links a { padding: 7px; }
+    .links { padding-left: 10px; }
+    .nav span { display: none; }
+  }
+
+  main { max-width: 880px; margin: 0 auto; padding: 28px 20px 40px; }
+
+    .hero {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .hero img { width: 96px; height: 96px; background: var(--panel2); border-radius: 12px; padding: 14px; }
+  .hero .info { flex: 1; min-width: 220px; }
+  h1 { margin: 0 0 4px; font-size: 26px; }
+  .desc { margin: 0 0 12px; color: var(--muted); font-size: 15px; }
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag {
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 2px 10px;
+    font-size: 13px;
+    color: var(--text);
+    direction: ltr;
+  }
+
+    .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-top: 16px; }
+  @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .card h2 { margin: 0 0 12px; font-size: 17px; }
+  .card ul { margin: 0; padding: 0 0 0 20px; color: var(--muted); font-size: 15px; }
+  .card li { margin-bottom: 4px; }
+  .card li::marker { color: var(--accent); }
+  .card + .card { margin-top: 16px; }
+
+  .stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+  }
+  .stat:last-of-type { border-bottom: none; }
+  .stat span { color: var(--muted); }
+  .stat b { direction: ltr; }
+  #count { color: var(--text); font-size: 18px; }
+  #count.bump { color: var(--accent); }
+
+  a.btn {
+    display: block;
+    cursor: pointer;
+    margin-top: 14px;
+    padding: 12px;
+    background: var(--accent);
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+  }
+  a.btn:hover { background: var(--accent-hover); }
+  a.btn.off { background: var(--panel2); color: var(--muted); pointer-events: none; }
+
+    .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 10;
+  }
+  .overlay.open { display: flex; }
+  .modal {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+  }
+  .modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .modal-head h3 { margin: 0; font-size: 18px; }
+  .close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .close:hover { color: var(--text); }
+  .modal p { margin: 0 0 14px; color: var(--muted); font-size: 14px; }
+  .versions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .versions a {
+    display: block;
+    padding: 10px 0;
+    text-align: center;
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 15px;
+  }
+  .versions a:hover { border-color: var(--accent); }
+  .versions a.na {
+    color: #5c5e66;
+    pointer-events: none;
+    text-decoration: line-through;
+  }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 20px;
+    border-top: 1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="links">
+      <a id="discord" href="#" target="_blank" rel="noopener" aria-label="Discord">
+        <svg viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
+        <span>Discord</span>
+      </a>
+      <a id="github" href="#" target="_blank" rel="noopener" aria-label="GitHub">
+        <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        <span>GitHub</span>
+      </a>
+    </div>
+    <div class="nav">
+      <img src="/icon.png" alt="">
+      <span id="siteName">...</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <img src="/icon.png" alt="">
+      <div class="info">
+        <h1 id="modName">...</h1>
+        <p class="desc" id="desc"></p>
+        <div class="tags" id="tags"></div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h2>Features</h2>
+          <ul id="features"></ul>
+        </div>
+        <div class="card">
+          <h2>Requirements</h2>
+          <ul id="requirements"></ul>
+        </div>
+        <div class="card">
+          <h2>Installation</h2>
+          <ul>
+            <li>Download the mod file</li>
+            <li>Put it in the mods folder inside your game folder</li>
+            <li>Launch the game with the same Minecraft version you downloaded</li>
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <h2>Download</h2>
+          <div class="stat"><span>Version</span><b id="version">-</b></div>
+          <div class="stat"><span>Minecraft</span><b id="mc">-</b></div>
+          <div class="stat"><span>Downloads</span><b id="count">0</b></div>
+          <a class="btn off" id="btn">Download</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>Select Minecraft version</h3>
+        <button class="close" id="close" aria-label="Close">&times;</button>
+      </div>
+      <p>Choose the version you play on.</p>
+      <div class="versions" id="versions"></div>
+    </div>
+  </div>
+
+  <footer id="footer"></footer>
+
+<script>
+  const $ = id => document.getElementById(id);
+
+  function fillList(id, items) {
+    const el = $(id);
+    el.innerHTML = '';
+    (items || []).forEach(t => {
+      const li = document.createElement('li');
+      li.textContent = t;
+      el.appendChild(li);
+    });
+  }
+
+  const overlay = $('overlay');
+  const openModal = () => overlay.classList.add('open');
+  const closeModal = () => overlay.classList.remove('open');
+
+  $('btn').addEventListener('click', openModal);
+  $('close').addEventListener('click', closeModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  fetch('/api/info').then(r => r.json()).then(i => {
+    $('siteName').textContent = i.siteName || '';
+    $('modName').textContent = i.modName || '';
+    $('desc').textContent = i.description || '';
+    $('version').textContent = i.version || '-';
+    $('count').textContent = i.count;
+    $('footer').textContent = i.siteName || '';
+    document.title = i.modName || 'Download';
+
+    if (i.discord) $('discord').href = i.discord;
+    if (i.github) $('github').href = i.github;
+
+    const versions = i.versions || [];
+    const range = versions.length
+      ? (versions.length > 1 ? versions[0] + ' - ' + versions[versions.length - 1] : versions[0])
+      : '';
+    $('mc').textContent = range || '-';
+
+    const tags = $('tags');
+    [range && 'Minecraft ' + range, i.loader, i.side].filter(Boolean).forEach(t => {
+      const s = document.createElement('span');
+      s.className = 'tag';
+      s.textContent = t;
+      tags.appendChild(s);
+    });
+
+    fillList('features', i.features);
+    fillList('requirements', i.requirements);
+
+    const box = $('versions');
+    box.innerHTML = '';
+    let anyAvailable = false;
+    versions.forEach(v => {
+      const a = document.createElement('a');
+      a.textContent = v;
+      if (i.available && i.available[v]) {
+        a.href = '/download?v=' + encodeURIComponent(v);
+        a.addEventListener('click', () => setTimeout(closeModal, 300));
+        anyAvailable = true;
+      } else {
+        a.className = 'na';
+      }
+      box.appendChild(a);
+    });
+
+    if (anyAvailable) {
+      $('btn').classList.remove('off');
+    } else {
+      $('btn').textContent = 'Not available';
+    }
+  });
+
+  let first = true;
+  const es = new EventSource('/events');
+  es.onmessage = e => {
+    const c = $('count');
+    c.textContent = e.data;
+    if (!first) {
+      c.classList.add('bump');
+      setTimeout(() => c.classList.remove('bump'), 600);
+    }
+    first = false;
+  };
+</script>
+</body>
+</html>
